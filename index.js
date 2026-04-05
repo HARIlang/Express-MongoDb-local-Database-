@@ -31,15 +31,26 @@ app.post("/api/products",   async (req, res) => {
  
   try{
    
-     const Product = await productModel.create(req.body);
-     res.status(200).json({
-      success:true,
-      data:product
-     });
+    const {name,quantity,price,image} = req.body;
+    
+    const existingProduct =  await productModel.findOne({name});
+      if(existingProduct){
+        res.status(409).json({
+          message:'the product is already exist'
+        })
+      }
 
+      else{
 
+          const product = await productModel.create({name,quantity,price,image});
+          res.status(201).json({
+            success:true,
+            message:'product is created',
+            data:product
+          });
 
-  }
+      }
+    }
   catch(error){
 
     res.status(500).json({
