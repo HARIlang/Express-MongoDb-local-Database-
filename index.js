@@ -6,6 +6,7 @@ require("dotenv").config();
 const productModel = require("./models/productModel");
 const { error } = require("node:console");
 const product = require("./models/productModel");
+const { read } = require("node:fs");
 
 app.use(express.json());
 
@@ -24,6 +25,37 @@ app.get("/", (req, res) => {
   res.send("hello bro");
 });
 
+
+app.get("/api/products", async (req,res)=>{
+
+try{
+    const findProduct = await productModel.find();
+    
+       if(findProduct===0){
+
+       res.status(200).json({
+         message:"there is no products"
+
+
+       })
+       }
+
+       else{
+             res.status(200).json({
+              message:"available products are",
+              data:findProduct
+             })
+      
+
+       }
+}
+catch(error){
+  
+}
+     
+
+
+})
 
 // post api for store the data of the product
 

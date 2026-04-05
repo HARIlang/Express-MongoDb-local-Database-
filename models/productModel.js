@@ -25,10 +25,11 @@ const productSchema = mongoose.Schema({
     type: String,
     required: false,
   },
-});
+},
 {
-  timestamps: true;
-}
+  timestamps: true
+});
+
 
   // the collection name should be named in singular form
 
