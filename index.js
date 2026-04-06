@@ -82,20 +82,27 @@ app.get("/api/product/:name", async (req, res) => {
   try {
     const { name } = req.params;
     // validation
-    if (!name) {
+    if (!name) {         // validate the url if the wrong name is written
       res.status(400).json({
         message: "the product is not found in this name",
       });
+    }
+
+    const product = await productModel.findOne({ name });
+    if (product == null) {             // validate the name in the database
+      return res.status(400).json({
+        message: `the product is not found or not match the given name ${name}`,
+        success: false,
+      });
     } else {
-      const product = await productModel.findOne({ name });
-      res.status(200).json({
-        message: `the is found ${product.name}`,
+      res.status(200).json({                // view the data if the the name is found 
+       message: `the product is is found ${product.name}`,
         data: product,
       });
     }
   } catch (error) {
     res.status(500).json({
-      message: "error.message",
+      message: error,
     });
   }
 });
