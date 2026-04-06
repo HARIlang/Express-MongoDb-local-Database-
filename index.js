@@ -8,8 +8,7 @@ const { error } = require("node:console");
 const product = require("./models/productModel");
 const { read } = require("node:fs");
 
-const productUpdates =  require('./models/porductUpdates')
-
+const productUpdates = require("./models/porductUpdates");
 
 app.use(express.json());
 
@@ -130,27 +129,64 @@ app.put("/api/product/:id", async (req, res) => {
       return res.status(400).json({
         message: `the product is not found in the given ${id}`,
       });
-    } 
+    }
 
-     
+    const updatedProduct = await productModel.findById(id);
+    res.status(201).json({
+      message: "this is the updated product",
+      data: updatedProduct,
+    });
+    console.log(product.name);
+    console.log(updatedProduct.name);
 
-      const updatedProduct = await productModel.findById(id);
-      res.status(201).json({
-        message:'this is the updated product',
-        data:updatedProduct
-      })
-      console.log(product.name);
-      console.log(updatedProduct.name)
-    
- const updateList = await productUpdates.create({
-        
-        old_name:product.name,
-        new_name:updatedProduct.name
-      })
-    
+    // track the updated data in the separate collection
+    const updateList = await productUpdates.create({
+      old_name: product.name,
+      new_name: updatedProduct.name,
+    });
+  } catch (error) {
+    res.status.json({
+      message: error,
+    });
+  }
+});
 
+app.delete("/api/delete/product/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
 
-  } catch (error) {}
+    // validate id
+    if (!id) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid product ID",
+      });
+    }
+
+    // delete product
+    const deletedProduct = await productModel.findByIdAndDelete(id);
+
+    // not found
+    if (!deletedProduct) {
+      return res.status(404).json({
+        success: false,
+        message: "No product found to delete",
+      });
+    }
+
+    // success
+    return res.status(200).json({
+      success: true,
+      message: `Product "${deletedProduct.name}" deleted successfully`,
+      data: deletedProduct,
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
 });
 
 app.listen(4000, () => {
