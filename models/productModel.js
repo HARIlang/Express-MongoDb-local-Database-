@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 
    // structure  of a document
 
-const productSchema = mongoose.Schema({
+const productSchema = mongoose.Schema({                 // it only define the model not validate the model
   name: {
     type: String,
     required: [true, "the product must have name "],
