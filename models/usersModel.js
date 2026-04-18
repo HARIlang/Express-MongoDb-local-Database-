@@ -12,11 +12,13 @@ name:{
 },
 age:{
     type:Number,
-     required:true
+     required:true,
+     min:15,
+     max:100
 
 },
 gender:{
-  type:string,
+  type:String,
   required:true
 },
 role:{
